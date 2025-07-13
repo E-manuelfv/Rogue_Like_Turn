@@ -35,3 +35,10 @@ class Goblin(Enemy):
         damage = self.attack + boost
         hero.take_damage(damage)
         print(f"{self.name} golpeou {hero.name} causando {damage}.")
+
+class Orc(Enemy):
+    def attack_hero(self, hero):
+        boost = random.choice([0, 5])  # Orc
+        damage = self.attack + boost
+        hero.take_damage(damage)
+        print(f"{self.name} golpeou {hero.name} causando {damage}.")

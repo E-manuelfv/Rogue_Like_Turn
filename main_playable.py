@@ -1,9 +1,9 @@
-from src.hero import Hero
+from src.Hero import Hero
 from src.enemy import *
 from src.Weapon import *
 from src.shop import Shop
 from src.utils import generate_enemy_wave
-import random
+import random, os
 
 def main():
     print("=== Bem-vindo ao Rogue Like ===")
@@ -18,9 +18,12 @@ def main():
     else:
         hero.choose_weapon(shop.inventory[0])
     print("Você também recebeu 1 poção de cura.")
+    input("Digite qualquer tecla para prosseguir... ")
 
+    
     stage = 1
     while stage <= 3:
+        clear()
         print(f"\n-- Estágio {stage} --")
         if stage < 3:
             enemies = generate_enemy_wave(stage)
@@ -66,6 +69,12 @@ def main():
             stage += 1
 
     print("Parabéns! Você venceu o jogo derrotando o boss!")
+
+def clear():
+    if os.name == 'nt':
+        os.system('cls')
+    else:
+        os.system('clear')
 
 if __name__ == "__main__":
     main()

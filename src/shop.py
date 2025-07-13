@@ -11,14 +11,18 @@ class Shop:
         print("0 - Sair")
 
     def buy(self, hero, choice):
-        if 1 <= choice <= len(self.inventory):
-            weapon = self.inventory[choice - 1]
-            price = 10 * weapon.damage
-            if hero.gold >= price:
-                hero.gold -= price
-                hero.choose_weapon(weapon)
-                print(f"{weapon.name} comprado!")
-            else:
-                print("Ouro insuficiente.")
-        else:
-            print("Opção inválida.")
+        while choice [0, 1, 2, 3]:
+            try:
+                if 1 <= choice <= len(self.inventory):
+                    weapon = self.inventory[choice - 1]
+                    price = 10 * weapon.damage
+                    if hero.gold >= price:
+                        hero.gold -= price
+                        hero.choose_weapon(weapon)
+                        print(f"{weapon.name} comprado!")
+                    else:
+                        print("Ouro insuficiente.")
+            except:
+                choice = 0
+                print("Opção inválida.")
+
