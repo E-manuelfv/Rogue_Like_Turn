@@ -1,6 +1,3 @@
-from src.Weapon import Weapon
-import random
-
 class Hero:
     def __init__(self, name, hp=100, attack=10, defense=5):
         self.name = name
@@ -12,39 +9,38 @@ class Hero:
         self.weapon = None
         self.potions = 1
         self.level = 1
+        self.xp = 0  # Adicionando atributo de experiência
+        self.xp_to_level = 50  # XP necessário para subir de nível
 
-    def choose_weapon(self, weapon: Weapon):
+    def choose_weapon(self, weapon):
         self.weapon = weapon
-        print(f"{self.name} equipou a arma {weapon.name}.")
 
-    def attack_enemy(self, enemy):
-        if not self.weapon:
-            print("Nenhuma arma equipada!")
-            return
-        hit_chance = random.random()
-        if hit_chance <= self.weapon.accuracy:
-            damage = self.weapon.damage + self.attack - enemy.defense
-            damage = max(1, damage)
-            enemy.take_damage(damage)
-            print(f"{self.name} causou {damage} ao {enemy.name}.")
-        else:
-            print(f"{self.name} errou o ataque!")
+    def take_damage(self, damage):
+        self.hp = max(0, self.hp - damage)
+        return self.hp <= 0
 
-    def defend(self):
-        print(f"{self.name} se prepara para defender o próximo ataque.")
-        self.defense *= 2
-
-    def heal(self):
+    def use_potion(self):
         if self.potions > 0:
-            self.hp = min(self.max_hp, self.hp + 30)
+            self.hp = min(self.max_hp, self.hp + 20)
             self.potions -= 1
-            print(f"{self.name} usou uma poção de cura! HP restaurado para {self.hp}.")
-        else:
-            print("Sem poções de cura!")
+            return True
+        return False
 
-    def take_damage(self, amount):
-        reduced = amount - self.defense
-        reduced = max(1, reduced)
-        self.hp -= reduced
-        print(f"{self.name} sofreu {reduced} de dano. HP restante: {self.hp}")
-        self.defense = max(5, self.defense // 2)  # reset defesa se estava defendendo
+    def add_xp(self, amount):
+        """Adiciona experiência e verifica se subiu de nível"""
+        self.xp += amount
+        if self.xp >= self.xp_to_level:
+            self.level_up()
+            return True
+        return False
+
+    def level_up(self):
+        """Aumenta o nível do herói"""
+        self.level += 1
+        self.max_hp += 10
+        self.hp = self.max_hp  # Cura completamente ao subir de nível
+        self.attack += 2
+        self.defense += 1
+        self.xp = 0
+        self.xp_to_level = self.level * 50  # Aumenta o XP necessário para o próximo nível
+        return True

@@ -1,44 +1,37 @@
 from abc import ABC, abstractmethod
-import random
 
 class Enemy(ABC):
     def __init__(self, name, hp, attack, defense, level=1):
         self.name = name
+        self.max_hp = hp  # Adicionando max_hp
         self.hp = hp
         self.attack = attack
         self.defense = defense
         self.level = level
 
+    def take_damage(self, amount):
+        """Garante que o HP nunca fique negativo"""
+        self.hp = max(0, self.hp - amount)
+        return self.hp <= 0  # Retorna True se o inimigo morreu
+
     @abstractmethod
     def attack_hero(self, hero):
         pass
 
-    def take_damage(self, amount):
-        damage = amount - self.defense
-        damage = max(1, damage)
-        self.hp -= damage
-        print(f"{self.name} sofreu {damage} de dano. HP restante: {self.hp}")
-
-class Dragon(Enemy):
-    def attack_hero(self, hero):
-        attack_type = random.choice(["garras", "fogo"])
-        if attack_type == "garras":
-            damage = self.attack + 5
-        else:
-            damage = self.attack + 10
-        hero.take_damage(damage)
-        print(f"{self.name} atacou {hero.name} com {attack_type} causando {damage}.")
-
 class Goblin(Enemy):
     def attack_hero(self, hero):
-        boost = random.choice([0, 2])  # goblins podem se fortalecer em grupo
-        damage = self.attack + boost
-        hero.take_damage(damage)
-        print(f"{self.name} golpeou {hero.name} causando {damage}.")
+        damage = self.attack
+        print(f"{self.name} ataca com {damage} de dano!")
+        return damage
 
 class Orc(Enemy):
     def attack_hero(self, hero):
-        boost = random.choice([0, 5])  # Orc
-        damage = self.attack + boost
-        hero.take_damage(damage)
-        print(f"{self.name} golpeou {hero.name} causando {damage}.")
+        damage = self.attack + 2  # Orcs dão mais dano
+        print(f"{self.name} ataca com {damage} de dano!")
+        return damage
+
+class Dragon(Enemy):
+    def attack_hero(self, hero):
+        damage = self.attack + 5  # Dragões dão muito mais dano
+        print(f"{self.name} cospe fogo causando {damage} de dano!")
+        return damage
