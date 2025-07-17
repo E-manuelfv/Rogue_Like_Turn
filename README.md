@@ -25,7 +25,7 @@ Um jogo estilo Rogue Like desenvolvido em Python puro, com combate por turnos vi
 - Atributos do herói (HP, dano, defesa)
 - Inimigos com comportamentos distintos:
   - 👺 Goblins (rápidos)
-  - 💀 Esqueletos (resistentes)
+  - 👹 Orcs (resistentes)
   - 🐉 Dragões (poderosos)
 - Loja entre batalhas para upgrades
 
