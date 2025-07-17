@@ -5,21 +5,48 @@ from src.shop import Shop
 import random
 import os
 import time
+import pickle
+
+# Sistema de Save/Load
+def save_game(hero):
+    with open('save.dat', 'wb') as f:
+        pickle.dump(hero, f)
+
+def load_game():
+    try:
+        with open('save.dat', 'rb') as f:
+            return pickle.load(f)
+    except:
+        return None
 
 def clear():
-    """Limpa a tela do console"""
     os.system('cls' if os.name == 'nt' else 'clear')
 
 def delay(seconds):
-    """Adiciona um atraso controlado"""
     time.sleep(seconds)
+
+def generate_enemies(hero_level):
+    """Gera inimigos balanceados para o nível do herói"""
+    base_hp = 20 + (hero_level * 5)
+    base_attack = 8 + (2 * hero_level)
+    base_defense = 2 + hero_level
+    scenarios = [
+        [Goblin("Goblin", hp=int(base_hp*1.2), attack=base_attack, defense=base_defense)],
+        [Goblin("Goblin", hp=base_hp, attack=base_attack, defense=base_defense),
+         Goblin("Goblin", hp=base_hp, attack=base_attack, defense=base_defense)],
+        [Orc("Orc", hp=int(base_hp*1.8), attack=int(base_attack*1.5), defense=int(base_defense*1.5))],
+        [Orc("Orc", hp=int(base_hp*1.5), attack=int(base_attack*1.3), defense=int(base_defense*1.3)),
+         Goblin("Goblin", hp=base_hp, attack=base_attack, defense=base_defense)],
+        [Dragon("Dragão Boss", hp=int(base_hp*5), attack=int(base_attack*3), defense=int(base_defense*2))]
+    ]
+    return scenarios
 
 def battle(hero, enemies):
     """Sistema principal de batalha"""
     clear()
-    print("╔════════════════════════════╗")
+    print("╔══════════════════════════════╗")
     print(f"║  BATALHA CONTRA {len(enemies)} INIMIGO(S) ║")
-    print("╚════════════════════════════╝")
+    print("╚══════════════════════════════╝")
     delay(1)
     
     while True:
@@ -60,7 +87,7 @@ def battle(hero, enemies):
                 
         elif action == "2":  # Poção
             if hero.use_potion():
-                print(f"{hero.name} recuperou 20 HP!")
+                print(f"{hero.name} recuperou 50 HP!")
             else:
                 print("Sem poções disponíveis!")
             delay(1)
@@ -85,7 +112,7 @@ def battle(hero, enemies):
             hero.take_damage(damage)
             
             if hero.hp <= 0:
-                defeat()
+                defeat(hero)
                 return False
             delay(1)
         
@@ -93,34 +120,41 @@ def battle(hero, enemies):
         clear()
 
 def execute_attack(hero, target, enemies):
-    """Executa um ataque e remove inimigos derrotados"""
+    """Executa um ataque com verificação de arma"""
     print(f"\n{hero.name} ataca {target.name}!")
     delay(0.5)
     
-    if hero.weapon:
-        attack_results = hero.weapon.attack(target=target)
-        
-        for result in attack_results:
-            if len(result) >= 2:
-                t, dmg = result[0], result[1]
-                t.take_damage(dmg)
-                print(f"Causando {dmg} de dano!")
-                
-                if t.hp <= 0:
-                    print(f"{t.name} foi derrotado!")
-                    if t in enemies:
-                        enemies.remove(t)  # Remove completamente da lista de inimigos
-                delay(0.5)
-    else:
+    if not hero.weapon:
+        # Ataque básico sem arma
         damage = max(1, hero.attack - target.defense)
         target.take_damage(damage)
-        print(f"Causando {damage} de dano!")
-        
-        if target.hp <= 0:
-            print(f"{target.name} foi derrotado!")
-            if target in enemies:
-                enemies.remove(target)  # Remove completamente da lista de inimigos
-        delay(0.5)
+        print(f"Causando {damage} de dano com ataque básico!")
+    else:
+        try:
+            # Ataque com arma
+            if hero.weapon.attack_type == 'aoe':
+                attack_results = hero.weapon.attack(targets=enemies)
+            else:
+                attack_results = hero.weapon.attack(target=target)
+            
+            for result in attack_results:
+                if len(result) >= 2:
+                    t, dmg = result[0], result[1]
+                    t.take_damage(dmg)
+                    print(f"Causando {dmg} de dano com {hero.weapon.name}!")
+                    
+                    if t.hp <= 0:
+                        print(f"{t.name} foi derrotado!")
+                        enemies.remove(t)
+        except AttributeError:
+            # Fallback para ataque básico se houver problema com a arma
+            damage = max(1, hero.attack - target.defense)
+            target.take_damage(damage)
+            print(f"Causando {damage} de dano com ataque básico!")
+    
+    if target.hp <= 0 and target in enemies:
+        enemies.remove(target)
+    delay(0.5)
 
 def victory(hero):
     """Processa vitória"""
@@ -128,9 +162,9 @@ def victory(hero):
     reward = 10 * hero.level
     hero.gold += reward
     
-    print("╔════════════════════════════╗")
+    print("╔═══════════════════════════╗")
     print("║        VITÓRIA!           ║")
-    print("╚════════════════════════════╝")
+    print("╚═══════════════════════════╝")
     print(f"\nRecompensa: {reward} ouro")
     
     # Adiciona XP e verifica level up
@@ -142,88 +176,118 @@ def victory(hero):
     
     delay(2)
 
-def defeat():
-    """Processa derrota"""
+def defeat(hero):
+    """Processa derrota mantendo progresso"""
     clear()
     print("╔════════════════════════════╗")
     print("║        DERROTA...         ║")
     print("╚════════════════════════════╝")
-    print("\nSeu herói foi derrotado...")
-    delay(2)
+    print("\nSeu herói foi derrotado, mas mantém seu progresso!")
+    
+    # Revive o herói com 50% de HP
+    hero.hp = max(1, hero.max_hp // 2)  # Garante pelo menos 1 HP
+    hero.potions = 1
+    
+    print(f"\n{hero.name} revive com {hero.hp}/{hero.max_hp} HP")
+    print(f"Poções resetadas: {hero.potions}")
+    print(f"Nível mantido: {hero.level}")
+    print(f"XP atual: {hero.xp}/{hero.xp_to_level}")
+    delay(3)
+    return hero  # Retorna o herói modificado
 
-# Lista de cenários de batalha
+def shop_menu(hero, shop):
+    """Menu de compras com tratamento melhorado"""
+    while True:
+        clear()
+        shop.show_shop()
+        print(f"\nOuro: {hero.gold:.1f}")
+        
+        try:
+            choice = int(input("Escolha o item (1-6) ou 0 para sair: "))
+            
+            if choice == 0:
+                break
+            elif 1 <= choice <= len(shop.inventory):
+                shop.buy(hero, choice)
+                input("\nPressione Enter para continuar...")
+            else:
+                print("Opção inválida!")
+                delay(1)
+        except ValueError:
+            print("Digite um número válido!")
+            delay(1)
 
 def main():
     print("=== Rogue Like RPG ===")
-    hero_name = input("Digite um nome para seu personagem: ")
-    hero = Hero(hero_name)
+    
+    # Carrega ou cria novo herói
+    hero = load_game()
+    if hero:
+        print(f"Herói carregado: {hero.name} (Nível {hero.level})")
+        print(f"HP: {hero.hp}/{hero.max_hp} | Ouro: {hero.gold} | XP: {hero.xp}/{hero.xp_to_level}")
+        choice = input("Continuar (1) ou Novo Jogo (2)? ")
+        if choice == "2":
+            hero = Hero(input("Digite um nome para seu personagem: "))
+    else:
+        hero = Hero(input("Digite um nome para seu personagem: "))
+    
     shop = Shop()
 
-    # Escolha inicial de arma
-    shop.show_shop()
-    try:
-        choice = int(input("Escolha sua arma inicial (1-3): "))
-        weapons = [Sword(), Bow(), Staff()]
-        if 1 <= choice <= 3:
-            hero.choose_weapon(weapons[choice-1])
-        else:
-            hero.choose_weapon(Sword())
-    except:
+    if not hero.weapon:
         hero.choose_weapon(Sword())
-
-    print("\nVocê recebeu 1 poção de cura!")
-    input("Pressione Enter para começar...")
-
-    battles_won = 0
     
-    battle_scenarios = [
-    [Goblin("Goblin", hp=25 ** hero.level, attack=15 ** hero.level, defense=2 ** hero.level, level=1)],
-    [Goblin("Goblin", hp=20 ** hero.level, attack=15 ** hero.level, defense=2 ** hero.level, level=1), 
-     Goblin("Goblin", hp=20 ** hero.level, attack=16 ** hero.level, defense=2 ** hero.level, level=1)],
-    [Orc("Orc", hp=40 ** hero.level, attack=20 ** hero.level, defense=5 ** hero.level, level=2)],
-    [Orc("Orc", hp=35 ** hero.level, attack=18 ** hero.level, defense=4 ** hero.level, level=2), 
-     Goblin("Goblin", hp=20 ** hero.level, attack=15 ** hero.level, defense=2 ** hero.level, level=1)],
-    [Dragon("Dragão Boss", hp=100, attack=30 ** hero.level, defense=10, level=3)],
-]
+    # Primeira vez - escolha de arma
+    if hero.level == 1 and not hero.weapon:
+        shop.show_shop()
+        try:
+            choice = int(input("Escolha sua arma inicial (1-3): "))
+            weapons = [Sword(), Bow(), Staff()]
+            hero.choose_weapon(weapons[choice-1] if 1 <= choice <= 3 else Sword())
+        except:
+            hero.choose_weapon(Sword())
+        print("\nVocê recebeu 1 poção de cura!")
+        input("Pressione Enter para começar...")
 
-
-    while hero.hp > 0:
-        clear()
+    while True:
+        # Gera inimigos balanceados
+        scenarios = generate_enemies(hero.level)
         
-        # Seleção de inimigos baseada no progresso
-        if battles_won < 3:
-            enemies = random.choice(battle_scenarios[:3])
-        elif battles_won == 3:
-            enemies = battle_scenarios[4]
+        # Progressão de dificuldade
+        if hero.level < 5:
+            available_scenarios = scenarios[:3]
+        elif 5 <= hero.level < 10:
+            available_scenarios = scenarios[:4]
         else:
-            enemies = random.choice(battle_scenarios)
+            available_scenarios = scenarios
         
-        # Garante que há inimigos
-        enemies = [e for e in enemies if e is not None]
-        if not enemies:
-            enemies = [Goblin("Goblin", hp=25, attack=5, defense=2, level=1)]
-
+        enemies = random.choice(available_scenarios)
+        
+        # Batalha
         won = battle(hero, enemies)
         
         if not won:
-            print("Reiniciando jogo...")
-            delay(2)
-            main()
-            return
+            hero = defeat(hero)  # Recebe o herói atualizado
+            save_game(hero)
+            
+            choice = input("\n1) Tentar novamente\n2) Voltar à loja\n3) Sair\nEscolha: ")
+            if choice == "2":
+                shop_menu(hero, shop)  # Chamada correta da função
+            elif choice == "3":
+                return
+            continue
         
-        battles_won += 1
-        shop.update_inventory(battles_won)
-        
-        # Opção de compra após batalha
+        # Progressão pós-batalha
+        shop.update_inventory(hero.level)
         shop.show_shop()
         try:
-            print(f"Você tem: {hero.gold}, moedas de ouro")
-            choice = int(input("Deseja comprar algo? (0 para pular): "))
-            if choice != 0:
+            print(f"Ouro: {hero.gold}")
+            choice = int(input("Comprar item ou Continuar? "))
+            if 1 <= choice <= 3:
                 shop.buy(hero, choice)
         except:
             pass
-
+        
+        save_game(hero)  # Salva progresso
         input("Pressione Enter para próxima batalha...")
 
 if __name__ == "__main__":

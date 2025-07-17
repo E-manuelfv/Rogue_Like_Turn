@@ -21,7 +21,7 @@ class Hero:
 
     def use_potion(self):
         if self.potions > 0:
-            self.hp = min(self.max_hp, self.hp + 20)
+            self.hp = min(self.max_hp, self.hp + 50)
             self.potions -= 1
             return True
         return False
