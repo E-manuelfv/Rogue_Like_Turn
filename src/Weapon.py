@@ -86,7 +86,6 @@ class Sword(Weapon):
             return True
         return False
 
-
 class Bow(Weapon):
     def __init__(self):
         super().__init__(
