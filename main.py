@@ -3,6 +3,7 @@ from src.Entities.Weapon import Sword, Bow, Staff
 from src.Game.Utils import generate_enemies
 from src.Game.Shop import Shop, shop_menu
 from src.Game.Battle import battle, defeat
+from src.Game.Save_Load import save_game, load_game
 import random, sys
 
 def main():
