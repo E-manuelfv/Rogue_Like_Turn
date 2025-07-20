@@ -3,7 +3,7 @@ from src.Entities.Weapon import Sword, Bow, Staff
 from src.Game.Utils import generate_enemies
 from src.Game.Shop import Shop, shop_menu
 from src.Game.Battle import battle, defeat
-import random
+import random, sys
 
 def main():
     print("=== Rogue Like RPG ===")
@@ -77,6 +77,17 @@ def main():
         
         save_game(hero)  # Salva progresso
         input("Pressione Enter para próxima batalha...")
+
+# Adicional para criar um executável do jogo
+def is_frozen():
+    """Verifica se o jogo foi compilado pelo PyInstaller"""
+    return hasattr(sys, '_MEIPASS')
+
+if is_frozen():
+    print("Modo executável detectado!")
+    # Ajuste caminhos de arquivos aqui
+else:
+    print("Modo desenvolvimento")
 
 if __name__ == "__main__":
     main()
