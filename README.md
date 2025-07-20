@@ -10,7 +10,7 @@ Um jogo estilo Rogue Like desenvolvido em Python puro, com combate por turnos vi
 - Derrote chefes para avançar de nível
 
 ## 🎮 Como Jogar pelo Executável
-- Execute o arquivo Game.exe
+- Execute o arquivo Game.exe ou seu executável
 
 ## ⚔️ Principais Mecânicas
 ### Sistema de Combate por Turnos
