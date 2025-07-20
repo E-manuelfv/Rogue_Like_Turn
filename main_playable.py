@@ -1,8 +1,8 @@
-from src.Hero import Hero
-from src.enemy import *
-from src.Weapon import *
+from entities.Hero import Hero
+from Entities.Enemy import *
+from entities.Weapon import *
 from src.shop import Shop
-from src.utils import generate_enemy_wave
+from Utils import generate_enemy_wave
 import random, os
 
 def main():

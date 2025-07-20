@@ -1,4 +1,5 @@
-from src.Weapon import Sword, Bow, Staff
+from src.Entities.Weapon import Sword, Bow, Staff
+from src.Game.Utils import clear, delay
 
 class Shop:
     def __init__(self):
@@ -114,3 +115,25 @@ class Shop:
             hero.weapon.base_damage += 2
             hero.weapon.accuracy = min(0.95, hero.weapon.accuracy + 0.04)
             print(f"\n🔧 {new_weapon.name} aprimorada!")
+
+def shop_menu(hero, shop):
+    """Menu de compras com tratamento melhorado"""
+    while True:
+        clear()
+        shop.show_shop()
+        print(f"\nOuro: {hero.gold:.1f}")
+        
+        try:
+            choice = int(input("Escolha o item (1-6) ou 0 para sair: "))
+            
+            if choice == 0:
+                break
+            elif 1 <= choice <= len(shop.inventory):
+                shop.buy(hero, choice)
+                input("\nPressione Enter para continuar...")
+            else:
+                print("Opção inválida!")
+                delay(1)
+        except ValueError:
+            print("Digite um número válido!")
+            delay(1)

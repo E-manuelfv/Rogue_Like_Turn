@@ -1,7 +1,7 @@
 # Importação de classes do projeto
-from src.Hero import Hero
-from src.enemy import Goblin, Orc, Dragon
-from src.Weapon import *
+from entities.Hero import Hero
+from Entities.Enemy import Goblin, Orc, Dragon
+from entities.Weapon import *
 from src.shop import Shop
 from src.Battle import battle, clear, delay
 import random
