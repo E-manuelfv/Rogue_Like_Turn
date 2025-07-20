@@ -90,7 +90,7 @@ class Bow(Weapon):
     def __init__(self):
         super().__init__(
             name="Arco", 
-            base_damage=8,
+            base_damage=12,
             accuracy=0.95,
             attack_type='single',
             special_effect="Armor Penetration"
@@ -105,7 +105,7 @@ class Staff(Weapon):
     def __init__(self):
         super().__init__(
             name="Cajado",
-            base_damage=7,
+            base_damage=10,
             accuracy=0.85,
             attack_type='aoe',
             special_effect="Burn"
