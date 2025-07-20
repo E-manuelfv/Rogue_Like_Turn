@@ -1,21 +1,51 @@
-# 🐵 Rogue Like Turn (Pygame)
+# 🏰 Rogue Like Turn (Terminal)
 
-Este é um projeto de **jogo estilo Rogue Like** desenvolvido em Python com **Pygame**, combinando combate por turnos, elementos de RPG e interface gráfica simples.  
+Um jogo estilo Rogue Like desenvolvido em Python puro, com combate por turnos via terminal, elementos de RPG clássico e progressão permanente entre tentativas.
 
-O jogador controla um herói em batalhas contra grupos de inimigos aleatórios, utilizando armas e poções para derrotar chefes e avançar por estágios. O jogo utiliza sprites e plano de fundo personalizados, mantendo melhorias do personagem a cada nova tentativa, seguindo o conceito de *rogue-like*.  
+## 🎮 Como Jogar pelo Terminal
+- Execute `main.py` no terminal
+- Navegue pelos menus usando números
+- Comande seu herói em batalhas por turnos contra inimigos
+- Gerencie recursos (HP, poções, ouro) estrategicamente
+- Derrote chefes para avançar de nível
 
-## 🎮 Características
+## 🎮 Como Jogar pelo Executável
+- Execute o arquivo Game.exe
 
-- Combate **por turnos** (herói vs inimigos)  
-- Herói personalizável com atributos (HP, ataque, defesa, poções)  
-- Sistema de armas baseado em classes (herança)  
-- Inimigos diferenciados (goblin, dragão) com habilidades únicas  
-- Loja entre os estágios para comprar armas ou melhorias  
-- Boss no estágio final  
-- Ouro aleatório como recompensa, proporcional ao nível do inimigo derrotado  
-- Interface gráfica em Pygame:  
-  - plano de fundo ilustrado  
-  - sprites animados para o herói  
-  - botões para escolher ações (atacar, defender, curar)  
-- Mensagens de combate em tela  
-- Elementos Rogue-Like: se o herói morre, reinicia mantendo melhorias e armas já compradas
+## ⚔️ Principais Mecânicas
+### Sistema de Combate por Turnos
+- Escolha entre atacar, defender ou usar poções  
+- Diferentes armas com propriedades únicas:
+  - 🗡️ Espadas (dano crítico)
+  - 🏹 Arcos (alta precisão)
+  - 🔮 Cajados (magia em área)
+
+### Progressão Permanente
+- Mantém ouro e melhorias entre tentativas (rogue-like)
+- Desbloqueia armas mais poderosas conforme avança
+
+### Sistema de RPG
+- Atributos do herói (HP, dano, defesa)
+- Inimigos com comportamentos distintos:
+  - 👺 Goblins (rápidos)
+  - 👹 Orcs (resistentes)
+  - 🐉 Dragões (poderosos)
+- Loja entre batalhas para upgrades
+
+### Dificuldade Progressiva
+- Inimigos mais fortes a cada nível
+- Chefes desafiadores em estágios-chave
+
+## 🛠️ Tecnologias
+- Python puro (sem bibliotecas externas)
+- Sistema orientado a objetos
+- Gerenciamento de estado do jogo
+- Interface 100% textual com feedback claro
+
+## 📌 Próximas Melhorias
+- [ ] Sistema de habilidades especiais
+- [ ] Mais variedade de inimigos
+- [ ] Eventos aleatórios entre batalhas
+- [ ] Sistema de salvamento de progresso
+
+> 💡 Dica: O jogo foi projetado para ser executado em qualquer terminal Python sem dependências extras, ideal para quem quer um RPG simples mas estratégico.

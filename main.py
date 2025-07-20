@@ -3,19 +3,7 @@ from src.Entities.Weapon import Sword, Bow, Staff
 from src.Game.Utils import generate_enemies
 from src.Game.Shop import Shop, shop_menu
 from src.Game.Battle import battle, defeat
-import random, pickle
-
-# Sistema de Save/Load
-def save_game(hero):
-    with open('save.dat', 'wb') as f:
-        pickle.dump(hero, f)
-
-def load_game():
-    try:
-        with open('save.dat', 'rb') as f:
-            return pickle.load(f)
-    except:
-        return None
+import random
 
 def main():
     print("=== Rogue Like RPG ===")
