@@ -9,7 +9,8 @@ __all__ = [
     'Dragon',
     'Sword',
     'Bow',
-    'Staff'
+    'Staff',
+    'Potions'
 ]
 
 __version__ = '1.0.0'

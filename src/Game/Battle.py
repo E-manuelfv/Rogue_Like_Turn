@@ -25,7 +25,8 @@ def battle(hero, enemies):
         
         # Turno do Herói
         print(f"\n{hero.name} - Nível {hero.level} | XP: {hero.xp}/{hero.xp_to_level}")
-        print(f"HP: {hero.hp}/{hero.max_hp} | Poções: {hero.potions}")
+        print(f"HP: {hero.hp}/{hero.max_hp} | Poções: {len(hero.potions) if hasattr(hero, 'potions') 
+                                                       and isinstance(hero.potions, list) else 0}")
         
         if not alive_enemies:  # Verifica se todos estão mortos
             victory(hero)
@@ -56,10 +57,22 @@ def battle(hero, enemies):
                 execute_attack(hero, alive_enemies[0], enemies)
                 
         elif action == "2":  # Poção
-            if hero.use_potion():
-                print(f"{hero.name} recuperou 50 HP!")
+            # Verificação robusta do sistema de poções
+            if not hasattr(hero, 'potions'):
+                hero.potions = []
+                print("Sistema de poções reiniciado!")
+            
+            if not isinstance(hero.potions, list):
+                hero.potions = []
+                print("Inventário de poções corrigido!")
+            
+            if hero.potions:  # Verifica se há poções
+                if hero.use_potion():
+                    pass
+                else:
+                    print("Não foi possível usar a poção!")
             else:
-                print("Sem poções disponíveis!")
+                print("Você não tem poções disponíveis!")
             delay(1)
             continue
             
