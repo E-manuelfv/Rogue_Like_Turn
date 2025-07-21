@@ -1,4 +1,4 @@
-# 🏰 Rogue Like Turn (Terminal)
+# 🏰 DUNGEON TURN (Terminal)
 
 Um jogo estilo Rogue Like desenvolvido por mim em Python puro, com combate por turnos via terminal, elementos de RPG clássico e progressão permanente entre tentativas.
 
@@ -9,7 +9,7 @@ Um jogo estilo Rogue Like desenvolvido por mim em Python puro, com combate por t
 - Gerencie recursos (HP, poções, ouro) estrategicamente
 - Derrote chefes para avançar de nível
 
-## 🎮 Como Jogar pelo Executável
+## 🎮 Como Jogar pelo Executável - Ainda não funcional...
 - Execute o arquivo Game.exe
 - Execute o arquivo Game.exe ou seu executável
 
@@ -30,7 +30,7 @@ Um jogo estilo Rogue Like desenvolvido por mim em Python puro, com combate por t
 - Inimigos com comportamentos distintos:
   - 👺 Goblins (rápidos)
   - 👹 Orcs (resistentes)
-  - 🐉 Dragões (poderosos)
+  - 🐉 Dragões (poderosos) - A partir do nível 5...
 - Loja entre batalhas para upgrades
 
 ### Dificuldade Progressiva
@@ -49,4 +49,4 @@ Um jogo estilo Rogue Like desenvolvido por mim em Python puro, com combate por t
 - [ ] Eventos aleatórios entre batalhas
 - [ ] Sistema de salvamento de progresso
 
-> 💡 Dica: O jogo foi projetado para ser executado em qualquer terminal Python sem dependências extras, ideal para quem quer um RPG simples mas estratégico.
+> 💡 Dica: O jogo foi projetado para ser executado em qualquer terminal Python.

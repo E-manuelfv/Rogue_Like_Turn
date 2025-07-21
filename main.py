@@ -48,12 +48,12 @@ def main():
         # Progressão de dificuldade
         if hero.level < 4:
             available_scenarios = scenarios[:3]
-        elif 4 >= hero.level < 6:
+        elif 4 >= hero.level <= 6:
             available_scenarios = scenarios[:4]
-        elif hero.level == 6:
+        elif hero.level == 5:
             EnemyBattle.boss_fight_variable = True
             delay(1) # Preparação para o Dragão...
-            print(" 🐉 Um Dragão sobrevoa a área!...")
+            print(" 🐉 Você adentrou a Masmorra do Dragão!...")
         else:
             available_scenarios = scenarios
         
