@@ -3,14 +3,20 @@ from src.Entities.Hero import *
 from src.Entities.Enemy import *
 from src.Entities.Weapon import *
 from src.Game.HUD import HUD
-from src.Game.Utils import clear, delay
+from src.Game.Utils import EnemyBattle, clear, delay
+import sys
 
 def battle(hero, enemies):
     """Sistema principal de batalha"""
     clear()
-    print("╔══════════════════════════════╗")
-    print(f"║  BATALHA CONTRA {len(enemies)} INIMIGO(S) ║")
-    print("╚══════════════════════════════╝")
+    if EnemyBattle.boss_fight_variable:
+        print("╔══════════════════════════════╗")
+        print(f"║ BATALHA CONTRA O DRAGÃO 🐲 !!║")
+        print("╚══════════════════════════════╝")
+    else:
+        print("╔══════════════════════════════╗")
+        print(f"║  BATALHA CONTRA {len(enemies)} INIMIGO(S) ║")
+        print("╚══════════════════════════════╝")
     delay(1)
     
     while True:
@@ -125,20 +131,56 @@ def victory(hero):
     clear()
     reward = 10 * hero.level
     hero.gold += reward
-    
+
     print("╔═══════════════════════════╗")
     print("║        VITÓRIA!           ║")
     print("╚═══════════════════════════╝")
     print(f"\nRecompensa: {reward} ouro")
-    
+
     # Adiciona XP e verifica level up
-    xp_gained = 30
+    if EnemyBattle.boss_fight_variable:
+        xp_gained = 200 + 10 * hero.level
+    else:
+        xp_gained = 20 + 10 * hero.level
+        
     print(f"Experiência: +{xp_gained} XP")
     if hero.add_xp(xp_gained):
         print("\n★ ★ ★ LEVEL UP! ★ ★ ★")
         print(f"Novo nível: {hero.level}")
     
     delay(2)
+
+    # Verifica se foi uma luta contra o chefe final
+    final_battle = EnemyBattle.boss_fight_variable
+    if final_battle:
+        delay(2)
+        print("\nVocê derrotou o dragão cuspidor de fogo!")
+        print("A princesa Neméia está a salvo em seus braços.")
+        print("O reino está em festa, e seu nome será lembrado por gerações.")
+        delay(3)
+
+        print(r"""
+              |\                     /)
+            /\_\\__               (_//
+           |   `>\-`     _._       //`)
+            \ /` \\  _.-`:::`-._  //
+             `    \|`    :::    `|/
+                   |     :::     |
+                   |.....:::.....|
+                   |:::::::::::::|
+                    \:::::::::::/
+                     \:::::::::/
+                       `-._.-'
+                      
+        """)
+        delay(3)
+
+        choice = input("\nDeseja continuar sua jornada mesmo após a vitória? (s/n): ").strip().lower()
+        if choice != 's':
+            print("\nVocê pendura sua espada e volta para casa com a princesa.")
+            print("Fim da jornada... por enquanto.")
+            delay(1)
+            sys.exit()  # Encerra o Jogo
 
 def defeat(hero):
     """Processa derrota mantendo progresso"""

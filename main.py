@@ -1,6 +1,7 @@
 from src.Entities.Hero import Hero
+from src.Game.Prologue import initial_prologue
 from src.Entities.Weapon import Sword, Bow, Staff
-from src.Game.Utils import generate_enemies
+from src.Game.Utils import EnemyBattle, delay
 from src.Game.Shop import Shop, shop_menu
 from src.Game.Battle import battle, defeat
 from src.Game.Save_Load import save_game, load_game
@@ -8,17 +9,20 @@ import random, sys
 
 def main():
     print("=== Rogue Like RPG ===")
-    
+
     # Carrega ou cria novo herói
     hero = load_game()
+
     if hero:
         print(f"Herói carregado: {hero.name} (Nível {hero.level})")
         print(f"HP: {hero.hp}/{hero.max_hp} | Ouro: {hero.gold} | XP: {hero.xp}/{hero.xp_to_level}")
         choice = input("Continuar (1) ou Novo Jogo (2)? ")
         if choice == "2":
             hero = Hero(input("Digite um nome para seu personagem: "))
+            initial_prologue(hero.name) # Prólogo do jogo
     else:
         hero = Hero(input("Digite um nome para seu personagem: "))
+        initial_prologue(hero) # Prólogo do jogo
     
     shop = Shop()
 
@@ -39,20 +43,29 @@ def main():
 
     while True:
         # Gera inimigos balanceados
-        scenarios = generate_enemies(hero.level)
+        scenarios = EnemyBattle.generate_enemies(hero.level)
         
         # Progressão de dificuldade
-        if hero.level < 5:
+        if hero.level < 4:
             available_scenarios = scenarios[:3]
-        elif 5 <= hero.level < 10:
+        elif 4 >= hero.level < 6:
             available_scenarios = scenarios[:4]
+        elif hero.level == 6:
+            EnemyBattle.boss_fight_variable = True
+            delay(1) # Preparação para o Dragão...
+            print(" 🐉 Um Dragão sobrevoa a área!...")
         else:
             available_scenarios = scenarios
         
-        enemies = random.choice(available_scenarios)
+        if EnemyBattle.boss_fight_variable:
+            enemies = scenarios[-1]
+        else:
+            enemies = random.choice(available_scenarios)
         
         # Batalha
         won = battle(hero, enemies)
+        delay(1) # Preparação para o Dragão...
+        print("Você se aproxima do Dragão 🐉...")
         
         if not won:
             hero = defeat(hero)  # Recebe o herói atualizado
@@ -71,7 +84,7 @@ def main():
         try:
             print(f"Ouro: {hero.gold}")
             choice = int(input("Comprar item ou Continuar? "))
-            if 1 <= choice <= 3:
+            if 1 <= choice <= len(shop.inventory):
                 shop.buy(hero, choice)
         except:
             pass

@@ -1,7 +1,7 @@
 from .Battle import battle, execute_attack, victory, defeat
 from .Shop import Shop, shop_menu
 from .Save_Load import save_game, load_game
-from .Utils import generate_enemies, clear, delay
+from .Utils import EnemyBattle, clear, delay
 
 __all__ = [
     'battle',
@@ -12,7 +12,7 @@ __all__ = [
     'shop_menu',
     'save_game',
     'load_game',
-    'generate_enemies',
+    'EnemyBattle',
     'clear',
     'delay'
 ]
