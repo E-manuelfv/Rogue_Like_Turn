@@ -129,6 +129,7 @@ def execute_attack(hero, target, enemies):
                     if t.hp <= 0:
                         print(f"{t.name} foi derrotado!")
                         enemies.remove(t)
+                        
         except AttributeError:
             # Fallback para ataque básico se houver problema com a arma
             damage = max(1, hero.attack - target.defense)

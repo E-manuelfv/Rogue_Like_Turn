@@ -113,10 +113,19 @@ class Staff(Weapon):
         
     def _aoe_attack(self, targets):
         results = []
+        burning = False
+        
         for target in targets:
-            damage = int(self.base_damage * 0.8 * (1 if random.random() < self.accuracy else 0))
-            if random.random() < 0.7:  # 70% chance de queimar
-                results.append((target, damage, self.base_damage * 0.2, 3))  # 3-turn burn
+            if burning:
+                damage = int(self.base_damage * 1.4)
+            else:
+                damage = int(self.base_damage * 1 * (1 if random.random() < self.accuracy else 0))
+
+            if random.random() < 0.5:  # 50% chance de queimar
+                results.append((target, damage, self.base_damage * 0.2, 3))  # queimando...
+                print(f"{target.name} está queimando🔥")
+                burning = True
             else:
                 results.append((target, damage))
+
         return results

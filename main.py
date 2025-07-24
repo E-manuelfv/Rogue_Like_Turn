@@ -35,14 +35,17 @@ def main():
         for i, weapon in enumerate(weapons):
             print(f"{i+1} - {weapon.name} (Dano: {weapon.base_damage})")
         
-        try:
-            choice = int(input("\nEscolha sua arma inicial (1-3): "))
-            if 1 <= choice <= 3:
-                hero.choose_weapon(weapons[choice-1])
-            else:
-                hero.choose_weapon(Sword())
-        except:
-            hero.choose_weapon(Sword())
+        while True:
+            try:
+                choice = int(input("\nEscolha sua arma inicial (1-3): "))
+                if 1 <= choice <= 3:
+                    hero.choose_weapon(weapons[choice-1])
+                    break
+                else:
+                    choice = None
+                    continue
+            except:
+                continue
         
         # Presente inicial
         hero.potions.append(HealthPotion(size='small'))
