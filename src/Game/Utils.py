@@ -40,10 +40,10 @@ class EnemyBattle:
                 'gold_max': reward_templates['goblin']['gold_max']
             },
             {
-                'name': 'Dupla de Goblins',
+                'name': 'Dupla de Goblins (BUFF)',
                 'enemies': [
-                    Goblin("Goblin", hp=base_hp, attack=base_attack, defense=base_defense),
-                    Goblin("Goblin", hp=base_hp, attack=base_attack, defense=base_defense)
+                    Goblin("Goblin", hp=base_hp, attack=int(base_attack*1.2), defense=base_defense),
+                    Goblin("Goblin", hp=base_hp, attack=int(base_attack*1.2), defense=base_defense)
                 ],
                 'xp': reward_templates['goblin']['xp'] * 2,
                 'gold_min': reward_templates['goblin']['gold_min'] * 2,

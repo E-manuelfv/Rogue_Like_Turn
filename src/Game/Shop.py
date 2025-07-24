@@ -115,62 +115,90 @@ class Shop:
 
     def buy_weapon(self, hero, choice):
         """Lógica de compra de armas"""
-        try:
-            if 1 <= choice <= len(self.weapons):
-                weapon = self.weapons[choice - 1]
-                price = self._calculate_weapon_price(weapon)
-                
-                if hero.gold >= price:
-                    # Verifica se é arma lendária ou especial
-                    is_special = any(x in weapon.name for x in ["Lendária", "Mestre", "Élfico"])
+        while True:
+            try:
+                if 1 <= choice <= len(self.weapons):
+                    weapon = self.weapons[choice - 1]
+                    price = self._calculate_weapon_price(weapon)
                     
-                    if hero.weapon and type(hero.weapon).__name__ == type(weapon).__name__ and not is_special:
-                        self._upgrade_weapon(hero, weapon)
+                    if hero.gold >= price:
+                        # Verifica se é arma lendária ou especial
+                        is_special = any(x in weapon.name for x in ["Lendária", "Mestre", "Élfico"])
+                        
+                        if hero.weapon and type(hero.weapon).__name__ == type(weapon).__name__ and not is_special:
+                            self._upgrade_weapon(hero, weapon)
+                        else:
+                            hero.choose_weapon(weapon)
+                            print(f"\n✅ {weapon.name} equipada!")
+                        
+                        hero.gold -= price
+                        print(f"Ouro restante: {hero.gold:.1f}")
+                        break
                     else:
-                        hero.choose_weapon(weapon)
-                        print(f"\n✅ {weapon.name} equipada!")
-                    
-                    hero.gold -= price
-                    print(f"Ouro restante: {hero.gold:.1f}")
+                        print(f"\n❌ Ouro insuficiente! Precisa de {price:.1f} (tem {hero.gold:.1f})")
+                        choice : int = None
+                
+                elif choice == 0:
+                    break # segue
+                
                 else:
-                    print(f"\n❌ Ouro insuficiente! Precisa de {price:.1f} (tem {hero.gold:.1f})")
-            else:
-                print("\n⚠️ Opção inválida!")
-        except Exception as e:
-            print(f"\n❌ Erro na compra: {e}")
+                    print("\n⚠️ Opção inválida!")
+                    choice : int = None
+
+            except Exception as e:
+                if choice == None:
+                    pass
+                else:
+                    print(f"\n❌ Erro na compra: {e}")
+                break
         
         input("\nPressione Enter para continuar...")
 
     def buy_potion(self, hero, choice):
         """Lógica segura para compra de poções"""
-        try:
-            if 1 <= choice <= len(self.potions):
-                potion = self.potions[choice - 1]
-                price = self._calculate_potion_price(potion)
-                
-                if hero.gold >= price:
-                    if hasattr(hero, 'add_to_inventory'):
-                        if hero.add_to_inventory(potion):
+
+        while True:
+            try:
+                if 1 <= choice <= len(self.potions):
+                    potion = self.potions[choice - 1]
+                    price = self._calculate_potion_price(potion)
+                    
+                    if hero.gold >= price:
+                        if hasattr(hero, 'add_to_inventory'):
+                            if hero.add_to_inventory(potion):
+                                hero.gold -= price
+                                print(f"\n✅ {potion.name} adicionada ao inventário!")
+                                print(f"Ouro restante: {hero.gold:.1f}")
+                            else:
+                                print("\n❌ Erro ao adicionar poção ao inventário!")
+                                choice : int = None
+                        else:
+                            # Fallback para heróis sem o método
+                            if not hasattr(hero, 'potions'):
+                                hero.potions = []
+                            hero.potions.append(potion)
                             hero.gold -= price
                             print(f"\n✅ {potion.name} adicionada ao inventário!")
                             print(f"Ouro restante: {hero.gold:.1f}")
-                        else:
-                            print("\n❌ Erro ao adicionar poção ao inventário!")
+                            break
                     else:
-                        # Fallback para heróis sem o método
-                        if not hasattr(hero, 'potions'):
-                            hero.potions = []
-                        hero.potions.append(potion)
-                        hero.gold -= price
-                        print(f"\n✅ {potion.name} adicionada ao inventário!")
-                        print(f"Ouro restante: {hero.gold:.1f}")
+                        print(f"\n❌ Ouro insuficiente! Precisa de {price:.1f} (tem {hero.gold:.1f})")
+                        choice : int = None
+                
+                elif choice == 0:
+                    break # segue
+
                 else:
-                    print(f"\n❌ Ouro insuficiente! Precisa de {price:.1f} (tem {hero.gold:.1f})")
-            else:
-                print("\n⚠️ Opção inválida!")
-        except Exception as e:
-            print(f"\n❌ Erro na compra: {e}")
-        
+                    print("\n⚠️ Opção inválida!")
+                    choice : int = None
+                    
+            except Exception as e:
+                if choice == None:
+                    pass
+                else:
+                    print(f"\n❌ Erro na compra: {e}")
+                break
+            
         input("\nPressione Enter para continuar...")
 
     def _upgrade_weapon(self, hero, new_weapon):
@@ -178,7 +206,7 @@ class Shop:
         # Se for uma espada normal
         if isinstance(new_weapon, Sword) and hasattr(new_weapon, 'sharpen'):
             if new_weapon.sharpened:
-                hero.weapon.base_damage += 3
+                hero.weapon.base_damage += 4
                 hero.weapon.accuracy = min(0.95, hero.weapon.accuracy + 0.05)
                 print(f"\n⚔️ {new_weapon.name} melhorada para versão superior!")
             else:
@@ -186,7 +214,7 @@ class Shop:
                 print(f"\n⚔️ Espada afiada!")
         else:
             # Melhoria padrão para outras armas
-            hero.weapon.base_damage += 2
+            hero.weapon.base_damage += 6
             hero.weapon.accuracy = min(0.95, hero.weapon.accuracy + 0.04)
             print(f"\n🔧 {new_weapon.name} aprimorada!")
 

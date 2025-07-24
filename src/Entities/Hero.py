@@ -4,7 +4,7 @@ class Hero:
     def __init__(self, name, hp=100, attack=10, defense=5):
         self.name = name
         self.max_hp = hp
-        self.hp = hp
+        self.hp = int(hp)
         self.attack = attack
         self.defense = defense
         self.gold = 0

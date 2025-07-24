@@ -199,7 +199,7 @@ def defeat(hero):
     """Processa derrota mantendo progresso"""
     clear()
     print("╔════════════════════════════╗")
-    print("║        DERROTA...         ║")
+    print("║         DERROTA...         ║")
     print("╚════════════════════════════╝")
     print("\nSeu herói foi derrotado, mas mantém seu progresso!")
     
